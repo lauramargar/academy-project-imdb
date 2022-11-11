@@ -1,0 +1,55 @@
+{
+  "id": 1,
+  "name": "patata",
+  "stars": "12",
+  "genre": "",
+  "score": 123123,
+  "facets": [{
+         "facet":"categories",
+         "type":"value",
+         "values":[
+            {
+               "id":"comedy",
+               "value":"comedy",
+               "count":112,
+               "filter":"category:comedy"
+            },
+   {
+               "id":"cartoon",
+               "value":"cartoon",
+               "count":112,
+               "filter":"category:cartoon"
+            },
+   {
+               "id":"terror",
+               "value":"terror",
+               "count":112,
+               "filter":"category:terror"
+            },
+              {
+               "id":"fantasy",
+               "value":"fantasy",
+               "count":112,
+               "filter":"category:fantasy"
+            },
+              {
+               "id":"asd",
+               "value":"asd",
+               "count":112,
+               "filter":"category:asd"
+            },
+               {
+               "id":"scifi",
+               "value":"scifi",
+               "count":112,
+               "filter":"category:scifi"
+            },
+               {
+               "id":"horror",
+               "value":"horror",
+               "count":112,
+               "filter":"category:horror"
+            }
+         ]
+      }]
+}
