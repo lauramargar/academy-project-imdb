@@ -1,65 +1,54 @@
 <template>
   <div id="emotions">
     <p>¿How do you feel?</p>
-    <button
-      v-for="emotion in emotions"
-      :key="emotion"
-      @click="changeCat(emotion)"
-    >
-      hola
-    </button>
+      <button class="joyBtn" @click="changeCat('joy')">😊</button>
+      <button class="loveBtn" @click="changeCat('love')">😍</button>
+      <button class="neutralBtn" @click="changeCat('neutral')">😐</button>
+      <button class="scaryBtn" @click="changeCat('scary')">😧</button>
+      <button class="sadBtn" @click="changeCat('sad')">😢</button>
   </div>
 </template>
 <script lang="ts">
 import { ResultModel } from "../types/result.model";
+import { defineComponent, PropType } from "vue";
+import store from "@/store";
 
-export default {
+
+export default defineComponent ({
   name: "EmotionsFilter",
   props: {
-    facet: {
-      type: { 
-        ResultModel 
-      }
-  },
-  data: function () {
-    return {
-      emotions: ["joy", "love", "neutral", "scary", "sad"],
-      list: [""],
-    };
+    result: {
+      type: Object as PropType<ResultModel>,
+      required: true,
+    }
   },
   methods: {
     changeCat(emotion: string) {
-      this.list = [];
-      for (let i = 0; i < this.facet.facets.length; i++) {
-        if (emotion === this.facet.facets[i].facet) {
-          for (let x = 0; x < this.facet.facets[i].values.length; x++) {
-            this.list.push(this.facet.facets[i].values[x].id as string);
+      store.list = [];
+      for (let i = 0; i < this.result.facets.length; i++) {
+        if (emotion === this.result.facets[i].facet) {
+          for (let x = 0; x < this.result.facets[i].values.length; x++) {
+            store.list.push(this.result.facets[i].values[x].id as string);
           }
         }
       }
     },
   },
-};
-/*export default defineComponent({
-  name: "HelloWorld",
-  props: {
-    msg: String,
-  },
-});*/
+});
 </script>
 <style scoped>
-h3 {
-  margin: 40px 0 0;
+#emotions button {
+  font-size: 40px;
+  border: none;
+  background-color: white;
+  border-radius: 40%;
+  margin-left: 30px;
+  margin-right: 30px;
 }
-ul {
-  list-style-type: none;
-  padding: 0;
+#emotions button:hover {
+  background-color: #b4b6b8;
 }
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+#emotions button:focus {
+  background-color: #b4b6b8;
 }
 </style>

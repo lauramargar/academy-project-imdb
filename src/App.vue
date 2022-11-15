@@ -7,13 +7,7 @@
     </div>
     <MainModal v-if="isOpen && !isFilter">
       <div id="emotions">
-        <EmotionsFilter v-bind:facet="facet"></EmotionsFilter>
-        <!--<p>¿How do you feel?</p>
-        <button class="joyBtn" @click="changeCat('joy')">😊</button>
-        <button class="loveBtn" @click="changeCat('love')">😍</button>
-        <button class="neutralBtn" @click="changeCat('neutral')">😐</button>
-        <button class="scaryBtn" @click="changeCat('scary')">😧</button>
-        <button class="sadBtn" @click="changeCat('sad')">😢</button>-->
+        <EmotionsFilter :result="facet" />
       </div>
       <div id="categories">
         <p>Choose a category:</p>
@@ -77,8 +71,7 @@ import EmotionsFilter from "./components/emotions.vue";
 import { FacetModel } from "./types/result.model";
 import { ResponseModel } from "./types/result.model";
 import { ResultModel } from "./types/result.model";
-
-
+import store from "./store";
 
 export default defineComponent({
   name: "App",
@@ -88,7 +81,7 @@ export default defineComponent({
   data: function () {
     return {
       datos,
-      list: [""],
+      list: store.list,
       name: datos.hits[0].primaryTitle,
       rating: datos.hits[0].averageRating,
       isOpen: false,
@@ -98,18 +91,6 @@ export default defineComponent({
       inputTwo: "90",
     };
   },
-  /*methods: {
-    changeCat(emotion: string) {
-      this.list = [];
-      for (let i = 0; i < this.facet.facets.length; i++) {
-        if (emotion === this.facet.facets[i].facet) {
-          for (let x = 0; x < this.facet.facets[i].values.length; x++) {
-            this.list.push(this.facet.facets[i].values[x].id as string);
-          }
-        }
-      }
-    },
-  },*/
 });
 /*function calcPosition(input: string) {
   // outputOne.style.left = this.value / this.getAttribute('max') * 100 + '%';
@@ -204,20 +185,6 @@ function getKeyByValue(value: string) {
   padding: 1.5rem;
   margin: 20px;
   width: max-content;
-}
-#emotions button {
-  font-size: 40px;
-  border: none;
-  background-color: white;
-  border-radius: 40%;
-  margin-left: 30px;
-  margin-right: 30px;
-}
-#emotions button:hover {
-  background-color: #b4b6b8;
-}
-#emotions button:focus {
-  background-color: #b4b6b8;
 }
 #categories {
   display: flex;
