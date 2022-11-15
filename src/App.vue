@@ -7,12 +7,13 @@
     </div>
     <MainModal v-if="isOpen && !isFilter">
       <div id="emotions">
-        <p>¿How do you feel?</p>
+        <EmotionsFilter v-bind:facet="facet"></EmotionsFilter>
+        <!--<p>¿How do you feel?</p>
         <button class="joyBtn" @click="changeCat('joy')">😊</button>
         <button class="loveBtn" @click="changeCat('love')">😍</button>
         <button class="neutralBtn" @click="changeCat('neutral')">😐</button>
         <button class="scaryBtn" @click="changeCat('scary')">😧</button>
-        <button class="sadBtn" @click="changeCat('sad')">😢</button>
+        <button class="sadBtn" @click="changeCat('sad')">😢</button>-->
       </div>
       <div id="categories">
         <p>Choose a category:</p>
@@ -26,8 +27,10 @@
       <div id="duration">
         <p>Select an interval for the film duration:</p>
         <section class="range-slider container">
-          <span class="output outputOne">{{ inputOne }}</span>
-          <span class="output outputTwo">{{ inputTwo }}</span>
+          <div class="range">
+            <span class="output outputOne">{{ inputOne }}</span>
+            <span class="output outputTwo">{{ inputTwo }}</span>
+          </div>
           <span class="full-range"></span>
           <span class="incl-range"></span>
           <input
@@ -70,10 +73,18 @@
 import { defineComponent } from "vue";
 import datos from "./components/data.json";
 import response from "./components/facets.json";
+import EmotionsFilter from "./components/emotions.vue";
+import { FacetModel } from "./types/result.model";
+import { ResponseModel } from "./types/result.model";
+import { ResultModel } from "./types/result.model";
+
+
 
 export default defineComponent({
   name: "App",
-  components: {},
+  components: {
+    EmotionsFilter,
+  },
   data: function () {
     return {
       datos,
@@ -87,7 +98,7 @@ export default defineComponent({
       inputTwo: "90",
     };
   },
-  methods: {
+  /*methods: {
     changeCat(emotion: string) {
       this.list = [];
       for (let i = 0; i < this.facet.facets.length; i++) {
@@ -98,9 +109,19 @@ export default defineComponent({
         }
       }
     },
-  },
+  },*/
 });
-//document.getElementsByClassName("rangeOne").style.left = inputOne as number / this.getAttribute('max') * 100 + '%';
+/*function calcPosition(input: string) {
+  // outputOne.style.left = this.value / this.getAttribute('max') * 100 + '%';
+  const outputOne = document.getElementsByClassName(
+    "output outputOne"
+  ) as HTMLCollectionOf<HTMLElement>;
+  outputOne[0].style.left =
+    ((input as unknown as number) /
+      document.getElementsByClassName("rangeOne").max) *
+      100 +
+    "%";
+}*/
 const mapResponse = (response: ResponseModel): ResultModel => {
   return {
     id: response.id,
@@ -163,27 +184,6 @@ function getKeyByValue(value: string) {
     sad: ["fantasy", "asd", "comedy"],
   };
   return Object.keys(emotions).filter((key) => emotions[key].includes(value));
-}
-
-export interface ResultModel {
-  id: number;
-  title: string;
-  facets: FacetModel[];
-}
-
-export interface ResponseModel {
-  id: number;
-  name: string;
-  facets: FacetModel[];
-  stars: string;
-  genre: string;
-  score: number;
-}
-
-export interface FacetModel {
-  facet: string;
-  type: string;
-  values: Record<string, unknown>[];
 }
 </script>
 
@@ -249,6 +249,10 @@ export interface FacetModel {
 .apply {
   margin-top: 50px;
 }
+.range {
+  display: flex;
+  flex-direction: row;
+}
 .range-slider {
   position: relative;
   width: 200px;
@@ -306,6 +310,7 @@ export interface FacetModel {
   color: #999;
   border-radius: 4px;
   display: inline-block;
+  align-items: center;
   font: bold 15px/30px Helvetica, Arial;
   bottom: 75%;
   left: 50%;
