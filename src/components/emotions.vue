@@ -1,7 +1,7 @@
 <template>
   <div id="emotions">
     <p>¿How do you feel?</p>
-      <button class="joyBtn" @click="changeCat('joy')">😊</button>
+      <button class="joyBtn" @click="changeCat('joy')" >😊</button>
       <button class="loveBtn" @click="changeCat('love')">😍</button>
       <button class="neutralBtn" @click="changeCat('neutral')">😐</button>
       <button class="scaryBtn" @click="changeCat('scary')">😧</button>
@@ -11,8 +11,6 @@
 <script lang="ts">
 import { ResultModel } from "../types/result.model";
 import { defineComponent, PropType } from "vue";
-import store from "@/store";
-
 
 export default defineComponent ({
   name: "EmotionsFilter",
@@ -22,21 +20,34 @@ export default defineComponent ({
       required: true,
     }
   },
+  data: function () {
+    return {
+      list: [""],
+      emotions: [{
+        title: "joy",
+
+      }]
+    };
+  },
   methods: {
     changeCat(emotion: string) {
-      store.list = [];
+      this.list = [];
       for (let i = 0; i < this.result.facets.length; i++) {
         if (emotion === this.result.facets[i].facet) {
           for (let x = 0; x < this.result.facets[i].values.length; x++) {
-            store.list.push(this.result.facets[i].values[x].id as string);
+            this.list.push(this.result.facets[i].values[x].id as string);
           }
         }
       }
+      this.$emit("list", this.list);
     },
   },
 });
 </script>
 <style scoped>
+p {
+  font-size: 30px;
+}
 #emotions button {
   font-size: 40px;
   border: none;

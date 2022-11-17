@@ -1,53 +1,38 @@
 <template>
-  <div id="app">
+ <div id="app">
     <div id="start" v-if="!isOpen">
-      <img alt="Vue logo" src="./assets/logo.png" />
       <h1>START SEARCHING FILMS</h1>
-      <button @click="isOpen = true">Search</button>
+      <button @click="isOpen = true" class="searchBtn">Search >></button>
     </div>
     <MainModal v-if="isOpen && !isFilter">
-      <div id="emotions">
-        <EmotionsFilter :result="facet" />
-      </div>
-      <div id="categories">
-        <p>Choose a category:</p>
-        <div class="list-cat">
-          <article v-for="item in list" :key="item">
-            <!--<button>{{ item }}</button>-->
-            <input type="radio" /> {{ item }}
-          </article>
-        </div>
-      </div>
-      <div id="duration">
-        <p>Select an interval for the film duration:</p>
-        <section class="range-slider container">
-          <div class="range">
-            <span class="output outputOne">{{ inputOne }}</span>
-            <span class="output outputTwo">{{ inputTwo }}</span>
+      <div class="mainModal">
+        <span class='arrowUp' @click="scrollSliderUp"></span>
+        <div class="slider">
+          <div class="box">
+            <div id="emotions" class="filter">
+              <EmotionsFilter :result="facet" @list="changeCat" />
+            </div>
+            <div id="categories" class="filter">
+              <p>Choose a category:</p>
+              <div class="list-cat">
+                <article v-for="item in listCat" :key="item">
+                  <input type="radio" /> {{ item }}
+                </article>
+              </div>
+            </div>
+            <div id="duration" class="filter">
+              <p>Select an interval for the film duration:</p>
+              <SliderFilter />
+            </div>
+            <div id="year" class="filter">
+              <p>Select an interval for a year or a decade:</p>
+              <SliderFilter />
+            </div>
           </div>
-          <span class="full-range"></span>
-          <span class="incl-range"></span>
-          <input
-            class="rangeOne"
-            name="rangeOne"
-            min="0"
-            max="100"
-            step="1"
-            type="range"
-            v-model="inputOne"
-          />
-          <input
-            class="rangeTwo"
-            name="rangeTwo"
-            min="0"
-            max="100"
-            step="1"
-            type="range"
-            v-model="inputTwo"
-          />
-        </section>
+        </div>
+        <span class='arrowDown' @click="scrollSliderDown"></span>
+        <button class="apply" @click="isFilter = true">Apply Filters >></button>
       </div>
-      <button class="apply" @click="isFilter = true">Apply Filters</button>
     </MainModal>
     <main v-if="isFilter">
       <p>RESULTADOS</p>
@@ -58,7 +43,7 @@
         <div class="name">{{ name }}</div>
         <div class="rating">{{ rating }}</div>
       </article>
-      <button @click="isFilter = false">Return to filters</button>
+      <button @click="isFilter = false" class="apply">Return to filters</button>
     </main>
   </div>
 </template>
@@ -68,41 +53,50 @@ import { defineComponent } from "vue";
 import datos from "./components/data.json";
 import response from "./components/facets.json";
 import EmotionsFilter from "./components/emotions.vue";
+import SliderFilter from "./components/slider.vue";
 import { FacetModel } from "./types/result.model";
 import { ResponseModel } from "./types/result.model";
 import { ResultModel } from "./types/result.model";
-import store from "./store";
 
 export default defineComponent({
   name: "App",
   components: {
     EmotionsFilter,
+    SliderFilter,
   },
   data: function () {
     return {
       datos,
-      list: store.list,
+      listCat: [""],
       name: datos.hits[0].primaryTitle,
       rating: datos.hits[0].averageRating,
       isOpen: false,
       isFilter: false,
       facet: mapResponse(response),
-      inputOne: "10",
-      inputTwo: "90",
     };
   },
+  methods: {
+    changeCat(list: string[]) {
+      this.listCat = list;
+    },
+    
+    scrollSliderDown() {
+      const slider = document.querySelector(".slider");
+      const box = document.querySelector(".filter") as HTMLElement;
+      console.log("hola");
+      slider?.scrollTo({
+        top: box?.offsetHeight + slider.scrollTop
+      });
+    },
+    scrollSliderUp() {
+      const slider = document.querySelector(".slider");
+      const box = document.querySelector(".filter") as HTMLElement;
+      slider?.scrollTo({
+        top: slider.scrollTop - box?.offsetHeight
+      });
+    },
+  },
 });
-/*function calcPosition(input: string) {
-  // outputOne.style.left = this.value / this.getAttribute('max') * 100 + '%';
-  const outputOne = document.getElementsByClassName(
-    "output outputOne"
-  ) as HTMLCollectionOf<HTMLElement>;
-  outputOne[0].style.left =
-    ((input as unknown as number) /
-      document.getElementsByClassName("rangeOne").max) *
-      100 +
-    "%";
-}*/
 const mapResponse = (response: ResponseModel): ResultModel => {
   return {
     id: response.id,
@@ -175,7 +169,52 @@ function getKeyByValue(value: string) {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+}
+.mainModal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+h1{
+  color: white;
+  position: absolute;
+  bottom: 50%;
+  font-size: 50px;
+}
+#start {
+  height: 100vh;
+  background-image: url("./assets/fondo3.png");
+  background-size: cover;
+  background-repeat:no-repeat;
+  background-position: center center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+p {
+  font-size: 30px;
+}
+.slider {
+  position: relative;
+  align-items: center;
+  height: 80vh;
+  overflow: scroll;
+  scroll-snap-type: y mandatory;
+  padding: 0;
+  margin: 0;
+}
+.box {
+ gap: 20px;
+ align-items: center;
+}
+.filter {
+  width: 100%;
+  height: 80vh;
+  scroll-snap-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 .article {
   display: flex;
@@ -185,11 +224,6 @@ function getKeyByValue(value: string) {
   padding: 1.5rem;
   margin: 20px;
   width: max-content;
-}
-#categories {
-  display: flex;
-  flex-direction: column;
-  margin-top: 40px;
 }
 .list-cat {
   display: flex;
@@ -213,155 +247,61 @@ function getKeyByValue(value: string) {
   margin-top: 50px;
   margin-bottom: 50px;
 }
+.arrowDown, .arrowUp {
+    position: relative;
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    border-radius: 5px;
+    background-color: rgb(65, 65, 65);
+}
+.arrowDown{
+  margin-bottom: 10px;
+}
+.arrowDown::before {
+    content: "";
+    position: absolute;
+    top: 7px;
+    left: 5px;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 14px solid white;
+}
+.arrowUp::before {
+    content: "";
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 14px solid white;
+}
+.searchBtn {
+  padding: .375rem .75rem;
+  border: 1px solid #14467b;
+  border-radius: .25rem;
+  color: #14467b;
+  transition: color .15s ease-in-out,
+    background-color .15s ease-in-out;
+  position: absolute;
+  bottom: 40%;
+  font-size: 20px;
+}
+.searchBtn:hover, .searchBtn:active, .searchBtn:focus {
+  color: #fff;
+  background-color: #14467b;
+}
 .apply {
-  margin-top: 50px;
+  padding: .375rem .75rem;
+  border: 1px solid rgb(72, 70, 70);
+  border-radius: .25rem;
+  color: rgb(72, 70, 70);
+  transition: color .15s ease-in-out,
+    background-color .15s ease-in-out;
+  font-size: 20px;
 }
-.range {
-  display: flex;
-  flex-direction: row;
-}
-.range-slider {
-  position: relative;
-  width: 200px;
-  height: 35px;
-  text-align: center;
-}
-.range-slider input {
-  pointer-events: none;
-  position: absolute;
-  overflow: hidden;
-  left: 0;
-  top: 15px;
-  width: 200px;
-  outline: none;
-  height: 18px;
-  margin: 0;
-  padding: 0;
-}
-.range-slider input::-webkit-slider-thumb {
-  pointer-events: all;
-  position: relative;
-  z-index: 1;
-  outline: 0;
-}
-.range-slider input::-moz-range-thumb {
-  pointer-events: all;
-  position: relative;
-  z-index: 10;
-  -moz-appearance: none;
-  width: 9px;
-}
-.range-slider input::-moz-range-track {
-  position: relative;
-  z-index: -1;
-  background-color: rgba(0, 0, 0, 1);
-  border: 0;
-}
-.range-slider input:last-of-type::-moz-range-track {
-  -moz-appearance: none;
-  background: none transparent;
-  border: 0;
-}
-.range-slider input[type="range"]::-moz-focus-outer {
-  border: 0;
-}
-.rangeValue {
-  width: 30px;
-}
-.output {
-  position: absolute;
-  border: 1px solid #999;
-  width: 40px;
-  height: 30px;
-  text-align: center;
-  color: #999;
-  border-radius: 4px;
-  display: inline-block;
-  align-items: center;
-  font: bold 15px/30px Helvetica, Arial;
-  bottom: 75%;
-  left: 50%;
-  transform: translate(-50%, 0);
-}
-.output.outputTwo {
-  left: 100%;
-}
-.container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-  margin-top: 60px;
-}
-input[type="range"] {
-  -webkit-appearance: none;
-  background: none;
-}
-input[type="range"]::-webkit-slider-runnable-track {
-  height: 5px;
-  border: none;
-  border-radius: 3px;
-  background: transparent;
-}
-input[type="range"]::-ms-track {
-  height: 5px;
-  background: transparent;
-  border: none;
-  border-radius: 3px;
-}
-input[type="range"]::-moz-range-track {
-  height: 5px;
-  background: transparent;
-  border: none;
-  border-radius: 3px;
-}
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  border: none;
-  height: 16px;
-  width: 16px;
-  border-radius: 50%;
-  background: #555;
-  margin-top: -5px;
-  position: relative;
-  z-index: 10000;
-}
-input[type="range"]::-ms-thumb {
-  -webkit-appearance: none;
-  border: none;
-  height: 16px;
-  width: 16px;
-  border-radius: 50%;
-  background: #555;
-  margin-top: -5px;
-  position: relative;
-  z-index: 10000;
-}
-input[type="range"]::-moz-range-thumb {
-  -webkit-appearance: none;
-  border: none;
-  height: 16px;
-  width: 16px;
-  border-radius: 50%;
-  background: #555;
-  margin-top: -5px;
-  position: relative;
-  z-index: 10000;
-}
-input[type="range"]:focus {
-  outline: none;
-}
-.full-range,
-.incl-range {
-  width: 100%;
-  height: 5px;
-  left: 0;
-  top: 21px;
-  position: absolute;
-  background: #ddd;
-}
-.incl-range {
-  background: gold;
+.apply:hover, .apply:active, .apply:focus {
+  color: #fff;
+  background-color: rgb(72, 70, 70);
 }
 </style>
