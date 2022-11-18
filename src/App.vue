@@ -35,14 +35,7 @@
       </div>
     </MainModal>
     <main v-if="isFilter">
-      <p>RESULTADOS</p>
-      <article id="results" class="article">
-        <div class="image">
-          <img alt="Spiderman" src="./assets/spiderman2.png" />
-        </div>
-        <div class="name">{{ name }}</div>
-        <div class="rating">{{ rating }}</div>
-      </article>
+      <ResultCard />
       <button @click="isFilter = false" class="apply">Return to filters</button>
     </main>
   </div>
@@ -50,10 +43,10 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import datos from "./components/data.json";
 import response from "./components/facets.json";
 import EmotionsFilter from "./components/emotions.vue";
 import SliderFilter from "./components/slider.vue";
+import ResultCard from "./components/card.vue";
 import { FacetModel } from "./types/result.model";
 import { ResponseModel } from "./types/result.model";
 import { ResultModel } from "./types/result.model";
@@ -63,13 +56,11 @@ export default defineComponent({
   components: {
     EmotionsFilter,
     SliderFilter,
+    ResultCard,
   },
   data: function () {
     return {
-      datos,
       listCat: [""],
-      name: datos.hits[0].primaryTitle,
-      rating: datos.hits[0].averageRating,
       isOpen: false,
       isFilter: false,
       facet: mapResponse(response),
@@ -83,7 +74,6 @@ export default defineComponent({
     scrollSliderDown() {
       const slider = document.querySelector(".slider");
       const box = document.querySelector(".filter") as HTMLElement;
-      console.log("hola");
       slider?.scrollTo({
         top: box?.offsetHeight + slider.scrollTop
       });
