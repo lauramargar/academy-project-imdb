@@ -6,39 +6,41 @@
       <button class="neutralBtn" @click="changeCat('neutral')">😐</button>
       <button class="scaryBtn" @click="changeCat('scary')">😧</button>
       <button class="sadBtn" @click="changeCat('sad')">😢</button>
+      <button class="intertngBtn" @click="changeCat('interesting')">🤔</button>
   </div>
 </template>
 <script lang="ts">
 import { ResultModel } from "../types/result.model";
-import { defineComponent, PropType } from "vue";
+import { defineComponent } from "vue";
 
 export default defineComponent ({
   name: "EmotionsFilter",
   props: {
-    result: {
-      type: Object as PropType<ResultModel>,
-      required: true,
-    }
+    result: {facets: [] } as any,
   },
   data: function () {
     return {
       list: [""],
-      emotions: [{
-        title: "joy",
-
-      }]
     };
   },
   methods: {
-    changeCat(emotion: string) {
+    async changeCat(emotion: string) {
       this.list = [];
-      for (let i = 0; i < this.result.facets.length; i++) {
+      console.log("lista vacía");
+      console.log(this.result);
+      for (let i = 0; i < (this.result).facets.length; i++) {
+        console.log("antes de encontrar emoción");
+        console.log(this.result.facets[i].facet);
+        console.log(emotion);
         if (emotion === this.result.facets[i].facet) {
+          console.log("encuentro emoción");
           for (let x = 0; x < this.result.facets[i].values.length; x++) {
             this.list.push(this.result.facets[i].values[x].id as string);
           }
         }
       }
+      console.log("lista llena");
+      console.log(this.list);
       this.$emit("list", this.list);
     },
   },

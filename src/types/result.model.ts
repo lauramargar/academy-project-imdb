@@ -1,16 +1,10 @@
 export interface ResultModel {
-    id: number;
-    title: string;
     facets: FacetModel[];
   }
   
   export interface ResponseModel {
-    id: number;
-    name: string;
+    hits: Record<string, unknown>[];
     facets: FacetModel[];
-    stars: string;
-    genre: string;
-    score: number;
   }
   
   export interface FacetModel {
@@ -18,3 +12,14 @@ export interface ResultModel {
     type: string;
     values: Record<string, unknown>[];
   }
+
+export class FindCat {
+  static async fetchCat(): Promise<ResponseModel> {
+      const response = await fetch("http://localhost:8080/search/genres");
+      return await response.json();
+  };
+  static async fetchFilms() {
+    const films = await fetch("http://localhost:8080/search");
+    return await films.json();
+  };
+}

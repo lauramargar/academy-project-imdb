@@ -10,7 +10,7 @@
         <div class="slider">
           <div class="box">
             <div id="emotions" class="filter">
-              <EmotionsFilter :result="facet" @list="changeCat" />
+              <EmotionsFilter :result="facet" @list="changeCat" @click="scrollSliderDown" />
             </div>
             <div id="categories" class="filter">
               <p>Choose a category:</p>
@@ -43,13 +43,13 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import response from "./components/facets.json";
 import EmotionsFilter from "./components/emotions.vue";
 import SliderFilter from "./components/slider.vue";
 import ResultCard from "./components/card.vue";
 import { FacetModel } from "./types/result.model";
 import { ResponseModel } from "./types/result.model";
 import { ResultModel } from "./types/result.model";
+import { FindCat } from "./types/result.model";
 
 export default defineComponent({
   name: "App",
@@ -63,12 +63,18 @@ export default defineComponent({
       listCat: [""],
       isOpen: false,
       isFilter: false,
-      facet: mapResponse(response),
+      facet: {facets: [] } as any,
     };
+  },
+  async mounted () {
+    const response = await FindCat.fetchCat();
+    this.facet = mapResponse(response);
+    console.log(this.facet);
   },
   methods: {
     changeCat(list: string[]) {
       this.listCat = list;
+      console.log(list);
     },
     
     scrollSliderDown() {
@@ -87,10 +93,11 @@ export default defineComponent({
     },
   },
 });
+
+
+
 const mapResponse = (response: ResponseModel): ResultModel => {
   return {
-    id: response.id,
-    title: response.name,
     facets: mapFacets(response.facets),
   };
 };
@@ -100,16 +107,18 @@ const mapFacets = (facets: FacetModel[]): FacetModel[] => {
   // Comprobariamos si el facet es el de categorias o el que queremos usar para agrupar emociones
   const mappedFacets: FacetModel[] = [];
   facets.forEach((facet) => {
-    if (facet.facet === "categories") {
+    if (facet.facet === "facetGenres") {
       // Aqui hacemos la agrupacion
       // Recorremos los values del facet categorias y los vamos agrupando
       const newFacet: FacetModel[] = [];
-
       facet.values.forEach((value) => {
         // Sacamos la emocion a la que pertenece
+        console.log(value);
         const emotions = getKeyByValue(value.id as string);
+        console.log("holii"+emotions+"fjvvfn");
         // Generamos un nuevo facet en base a esa emocion, para ello miramos si la hemos encontrado
         if (emotions.length > 0) {
+          console.log("hola3");
           // Antes de añadir un facet nuevo, miramos sin el array de facets que estamos creando, ya existe
           // alguna entrada para esa emocion, si existe, añadimos un value mas.
           const isFacetCreated = newFacet.filter((facet) =>
@@ -144,11 +153,14 @@ const mapFacets = (facets: FacetModel[]): FacetModel[] => {
 
 function getKeyByValue(value: string) {
   const emotions: Record<string, string[]> = {
-    joy: ["comedy", "cartoon", "scifi"],
-    scary: ["terror", "horror"],
-    sad: ["fantasy", "asd", "comedy"],
-  };
-  return Object.keys(emotions).filter((key) => emotions[key].includes(value));
+    joy: ["Comedy", "Action", "Adventure", "Animation", "Fantasy", "Reality-TV", "Family", "Sci-Fi"],
+    love: ["Romance", "Music", "Musical"],
+    neutral: ["Adult","Short","Reality-TV","Game-Show","Talk-Show","Western"],
+    scary: ["Mistery", "Horror", "Crime", "Thriller"],
+    sad: ["Drama", "War", "Crime", "Western", "Comedy"],
+    interesting: ["Biography", "Documentary", "News", "History", "Sport", "Talk-Show"]
+  }; 
+  return Object.keys(emotions).filter((key) => emotions[key].includes(value));  //no filtra y no consigue sacar la lista
 }
 </script>
 
@@ -293,5 +305,11 @@ p {
 .apply:hover, .apply:active, .apply:focus {
   color: #fff;
   background-color: rgb(72, 70, 70);
+}
+.slide-fade-enter-active {
+  transition: all .3s ease;
+}
+.slide-fade-leave-active {
+  transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
 }
 </style>
