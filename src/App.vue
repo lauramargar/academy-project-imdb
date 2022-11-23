@@ -26,7 +26,7 @@
             </div>
             <div id="year" class="filter">
               <p>Select an interval for a year or a decade:</p>
-              <SliderFilter />
+              <SliderFilter @min="outputYear" @max="outputYear" />
             </div>
           </div>
         </div>
@@ -35,7 +35,7 @@
       </div>
     </MainModal>
     <main v-if="isFilter">
-      <ResultCard />
+      <ResultCard :min="minYear" :max="maxYear"/>
       <button @click="isFilter = false" class="apply">Return to filters</button>
     </main>
   </div>
@@ -49,7 +49,8 @@ import ResultCard from "./components/card.vue";
 import { FacetModel } from "./types/result.model";
 import { ResponseModel } from "./types/result.model";
 import { ResultModel } from "./types/result.model";
-import { FindCat } from "./types/result.model";
+import { Find } from "./types/result.model";
+//import store from "./store/index";
 
 export default defineComponent({
   name: "App",
@@ -64,19 +65,28 @@ export default defineComponent({
       isOpen: false,
       isFilter: false,
       facet: {facets: [] } as any,
+      minYear: 0,
+      maxYear: 0,
+      //year: store.state.yearFilter,
     };
   },
   async mounted () {
-    const response = await FindCat.fetchCat();
+    const response = await Find.fetchCat();
     this.facet = mapResponse(response);
     console.log(this.facet);
+
+
   },
   methods: {
     changeCat(list: string[]) {
       this.listCat = list;
       console.log(list);
     },
-    
+    outputYear(min: number, max: number){
+      //this.year = true;
+      this.minYear = min;
+      this.maxYear = max;
+    },
     scrollSliderDown() {
       const slider = document.querySelector(".slider");
       const box = document.querySelector(".filter") as HTMLElement;
@@ -93,8 +103,6 @@ export default defineComponent({
     },
   },
 });
-
-
 
 const mapResponse = (response: ResponseModel): ResultModel => {
   return {

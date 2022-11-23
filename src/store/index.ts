@@ -1,26 +1,32 @@
 import { createStore } from "vuex";
-import { FindCat } from "@/types/result.model";
+import { Filter, Find, ResponseModel } from "@/types/result.model";
 
 export default createStore({
  state: {
-    
+    yearFilter: false,
+    allFilms: {} as any[],
  },
-
- actions: {
-    async setFindGenres(context) {
-        const response = await FindCat.fetchCat();
-        await context.dispatch("findImages", response);
-        context.commit("setFindGenres", response);
+ mutations: {
+    year(state, value) {
+      state.yearFilter = value;
     },
-    async findImages(context, films) {
-        const allImages = [] as any[];
-        for (let i = 0; i < films.length; i++) {
-          const image = "N/A";
-          //const image = await requestImages(films[i].primaryTitle);
-          allImages[i] = image;
-        }
-        context.commit("setImages", allImages);
-      },
- }
+    setAllFilms(state, value) {
+      state.allFilms = value;
+    },
+ },
+ actions: {
+    year(context, value) {
+      context.commit("year", value);
+    },
+    /*async setFindFilms(context: { commit: (arg0: string, arg1: ResponseModel) => void; }, min:number, max:number) {
+      if (this.yearFilter){
+        const response = await Filter.byYear(min,max);
+        context.commit("setAllFilms", response);
+      }else{
+        const response = await Find.fetchCat();
+        context.commit("setAllFilms", response);
+      }
+    },*/
+ },
 
 });

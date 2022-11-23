@@ -10,7 +10,6 @@
   </div>
 </template>
 <script lang="ts">
-import { ResultModel } from "../types/result.model";
 import { defineComponent } from "vue";
 
 export default defineComponent ({

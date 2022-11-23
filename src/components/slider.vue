@@ -1,14 +1,17 @@
 <template>
-        <section class="range-slider container">
-            <div class="range">
-            <span class="output outputOne">{{ inputOne }}</span>
-            <span class="output outputTwo">{{ inputTwo }}</span>
-            </div>
-            <span class="full-range"></span>
-            <span class="incl-range"></span>
-            <input class="rangeOne" name="rangeOne" min="0" max="100" step="1" type="range" v-model="inputOne" />
-            <input class="rangeTwo" name="rangeTwo" min="0" max="100" step="1" type="range" v-model="inputTwo" />
-        </section>
+  <div class="sliderFilter">
+    <section class="range-slider container">
+        <div class="range">
+        <span class="output outputOne">{{ inputOne }}</span>
+        <span class="output outputTwo">{{ inputTwo }}</span>
+        </div>
+        <span class="full-range"></span>
+        <span class="incl-range"></span>
+        <input class="rangeOne" name="rangeOne" min="0" max="100" step="1" type="range" v-model="inputOne" />
+        <input class="rangeTwo" name="rangeTwo" min="0" max="100" step="1" type="range" v-model="inputTwo" />
+    </section>
+    <button class="sliderBtn" @click="outputInfo()" >Save</button>
+  </div>
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
@@ -21,6 +24,12 @@ export default defineComponent ({
         inputTwo: "90",
     };
   },
+  methods: {
+    outputInfo(){
+      this.$emit("min", this.inputOne);
+      this.$emit("max", this.inputTwo);
+    }
+  }
 });
 </script>
 <style>
@@ -94,7 +103,7 @@ export default defineComponent ({
 }
 .container {
   position: relative;
-  left: 30%;
+  left: 35%;
 }
 input[type="range"] {
   -webkit-appearance: none;
