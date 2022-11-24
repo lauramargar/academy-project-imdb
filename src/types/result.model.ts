@@ -32,4 +32,8 @@ export class Filter {
     const filmsYear = await fetch("http://localhost:8080/search/?type=movie&minYear="+min+"&maxYear="+max);
     return await filmsYear.json();
   }
+  static async byDuration(min: number, max: number) {
+    const filmsDuration = await fetch("http://localhost:8080/search/?type=movie&minMinutes="+min+"&maxMinutes="+max);
+    return await filmsDuration.json();
+  }
 }

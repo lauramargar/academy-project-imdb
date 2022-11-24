@@ -28,18 +28,12 @@ export default defineComponent ({
       console.log("lista vacía");
       console.log(this.result);
       for (let i = 0; i < (this.result).facets.length; i++) {
-        console.log("antes de encontrar emoción");
-        console.log(this.result.facets[i].facet);
-        console.log(emotion);
         if (emotion === this.result.facets[i].facet) {
-          console.log("encuentro emoción");
           for (let x = 0; x < this.result.facets[i].values.length; x++) {
             this.list.push(this.result.facets[i].values[x].id as string);
           }
         }
       }
-      console.log("lista llena");
-      console.log(this.list);
       this.$emit("list", this.list);
     },
   },

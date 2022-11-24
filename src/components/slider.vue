@@ -7,27 +7,29 @@
         </div>
         <span class="full-range"></span>
         <span class="incl-range"></span>
-        <input class="rangeOne" name="rangeOne" min="0" max="100" step="1" type="range" v-model="inputOne" />
-        <input class="rangeTwo" name="rangeTwo" min="0" max="100" step="1" type="range" v-model="inputTwo" />
+        <input class="rangeOne" name="rangeOne" min="1990" max="2021" step="1" type="range" v-model="inputOne" />
+        <input class="rangeTwo" name="rangeTwo" min="1991" max="2022" step="1" type="range" v-model="inputTwo" />
     </section>
     <button class="sliderBtn" @click="outputInfo()" >Save</button>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
+import createStore from "../store/index";
 
 export default defineComponent ({
   name: "SliderFilter",
   data: function () {
     return {
-        inputOne: "10",
-        inputTwo: "90",
+        inputOne: "2000",
+        inputTwo: "2015",
     };
   },
   methods: {
     outputInfo(){
-      this.$emit("min", this.inputOne);
-      this.$emit("max", this.inputTwo);
+      createStore.dispatch("minYear",this.inputOne);
+      createStore.dispatch("maxYear", this.inputTwo);
+      createStore.dispatch("year", true);
     }
   }
 });

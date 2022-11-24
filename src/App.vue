@@ -16,17 +16,17 @@
               <p>Choose a category:</p>
               <div class="list-cat">
                 <article v-for="item in listCat" :key="item">
-                  <input type="radio" /> {{ item }}
+                  <label class="label"><input type="checkbox" /> {{ item }} </label>
                 </article>
               </div>
             </div>
             <div id="duration" class="filter">
               <p>Select an interval for the film duration:</p>
-              <SliderFilter />
+              <DurationSlider />
             </div>
             <div id="year" class="filter">
               <p>Select an interval for a year or a decade:</p>
-              <SliderFilter @min="outputYear" @max="outputYear" />
+              <SliderFilter />
             </div>
           </div>
         </div>
@@ -35,7 +35,7 @@
       </div>
     </MainModal>
     <main v-if="isFilter">
-      <ResultCard :min="minYear" :max="maxYear"/>
+      <ResultCard />
       <button @click="isFilter = false" class="apply">Return to filters</button>
     </main>
   </div>
@@ -45,6 +45,7 @@
 import { defineComponent } from "vue";
 import EmotionsFilter from "./components/emotions.vue";
 import SliderFilter from "./components/slider.vue";
+import DurationSlider from "./components/durationSlider.vue";
 import ResultCard from "./components/card.vue";
 import { FacetModel } from "./types/result.model";
 import { ResponseModel } from "./types/result.model";
@@ -58,6 +59,7 @@ export default defineComponent({
     EmotionsFilter,
     SliderFilter,
     ResultCard,
+    DurationSlider,
   },
   data: function () {
     return {
@@ -73,9 +75,9 @@ export default defineComponent({
   async mounted () {
     const response = await Find.fetchCat();
     this.facet = mapResponse(response);
-    console.log(this.facet);
-
-
+    console.log("App");
+    console.log("min: "+this.minYear);
+    console.log("max: "+this.maxYear);
   },
   methods: {
     changeCat(list: string[]) {
@@ -121,12 +123,9 @@ const mapFacets = (facets: FacetModel[]): FacetModel[] => {
       const newFacet: FacetModel[] = [];
       facet.values.forEach((value) => {
         // Sacamos la emocion a la que pertenece
-        console.log(value);
         const emotions = getKeyByValue(value.id as string);
-        console.log("holii"+emotions+"fjvvfn");
         // Generamos un nuevo facet en base a esa emocion, para ello miramos si la hemos encontrado
         if (emotions.length > 0) {
-          console.log("hola3");
           // Antes de añadir un facet nuevo, miramos sin el array de facets que estamos creando, ya existe
           // alguna entrada para esa emocion, si existe, añadimos un value mas.
           const isFacetCreated = newFacet.filter((facet) =>
@@ -161,14 +160,14 @@ const mapFacets = (facets: FacetModel[]): FacetModel[] => {
 
 function getKeyByValue(value: string) {
   const emotions: Record<string, string[]> = {
-    joy: ["Comedy", "Action", "Adventure", "Animation", "Fantasy", "Reality-TV", "Family", "Sci-Fi"],
-    love: ["Romance", "Music", "Musical"],
-    neutral: ["Adult","Short","Reality-TV","Game-Show","Talk-Show","Western"],
-    scary: ["Mistery", "Horror", "Crime", "Thriller"],
-    sad: ["Drama", "War", "Crime", "Western", "Comedy"],
-    interesting: ["Biography", "Documentary", "News", "History", "Sport", "Talk-Show"]
+    joy: ["comedy", "action", "adventure", "animation", "fantasy", "reality-tv", "family", "sci-fi"],
+    love: ["romance", "music", "musical"],
+    neutral: ["adult","short","reality-tv","game-show","talk-show","western"],
+    scary: ["mistery", "horror", "crime", "thriller"],
+    sad: ["drama", "war", "crime", "western", "comedy"],
+    interesting: ["biography", "documentary", "news", "history", "sport", "talk-show"]
   }; 
-  return Object.keys(emotions).filter((key) => emotions[key].includes(value));  //no filtra y no consigue sacar la lista
+  return Object.keys(emotions).filter((key) => emotions[key].includes(value));
 }
 </script>
 
@@ -179,6 +178,9 @@ function getKeyByValue(value: string) {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+}
+.label{
+  text-transform: capitalize;
 }
 .mainModal {
   display: flex;

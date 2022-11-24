@@ -13,7 +13,8 @@
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
-import { Find } from "../types/result.model";
+import createStore from "../store/index";
+//import { Find } from "../types/result.model";
 
 export default defineComponent ({
   name: "ResultCard",
@@ -23,10 +24,19 @@ export default defineComponent ({
         names: [] as string[],
         averages: [] as number[],
         images: [] as string[],
+        minYear: 0,
+        maxYear: 0,
     };
   },
+  computed: {
+    getFilms() {
+      createStore.dispatch("findFilms");
+      return createStore.state.allFilms;
+    }
+  },
   async mounted () {
-    this.films = await Find.fetchFilms();
+    this.films = this.getAllFilms();
+    console.log(this.films);
     this.films.hits.forEach((hit: { primaryTitle: string; averageRating: number; }) => {
         this.names.push(hit.primaryTitle);
         this.averages.push(hit.averageRating);
@@ -35,6 +45,12 @@ export default defineComponent ({
       const poster = await Find.fetchImage(this.names[i]);
       this.images.push(poster.Poster);
     }*/
+  },
+  methods: {
+    getAllFilms: function (){
+      //createStore.dispatch("findFilms", {min, max});
+      return this.getFilms;
+    }
   },
 });
 
