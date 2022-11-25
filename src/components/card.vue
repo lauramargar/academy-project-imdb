@@ -48,7 +48,6 @@ export default defineComponent ({
   },
   methods: {
     getAllFilms: function (){
-      //createStore.dispatch("findFilms", {min, max});
       return this.getFilms;
     }
   },

@@ -28,12 +28,28 @@ export class Find {
   };*/
 }
 export class Filter {
-  static async byYear(min: number, max: number) {
+  static async byYear (min: number, max: number) {
     const filmsYear = await fetch("http://localhost:8080/search/?type=movie&minYear="+min+"&maxYear="+max);
     return await filmsYear.json();
   }
-  static async byDuration(min: number, max: number) {
+  static async byDuration (min: number, max: number) {
     const filmsDuration = await fetch("http://localhost:8080/search/?type=movie&minMinutes="+min+"&maxMinutes="+max);
     return await filmsDuration.json();
+  }
+  static async byGenre (value:string) {
+    const filmsGenre = await fetch("http://localhost:8080/search/?type=movie&genres="+value);
+    return await filmsGenre.json();
+  }
+  static async byYearDur (minYear: number, maxYear: number,minDur: number, maxDur: number) {
+    const filmsGenreDur = await fetch("http://localhost:8080/search/?type=movie&minYear="+minYear+"&maxYear="+maxYear+"&minMinutes="+minDur+"&maxMinutes="+maxDur);
+    return await filmsGenreDur.json();
+  }
+  static async byGenreAndOne (value: string) {
+    const filmsGenreAndOne = await fetch("http://localhost:8080/search/?type=movie&genres="+value);
+    return await filmsGenreAndOne.json();
+  }
+  static async byAll (value: string) {
+    const filmsAll = await fetch("http://localhost:8080/search/?type=movie&genres="+value);
+    return await filmsAll.json();
   }
 }

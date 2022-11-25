@@ -16,7 +16,7 @@
               <p>Choose a category:</p>
               <div class="list-cat">
                 <article v-for="item in listCat" :key="item">
-                  <label class="label"><input type="checkbox" /> {{ item }} </label>
+                  <label class="label"><input class="check" type="checkbox" @click="addGenre(item)" /> {{ item }} </label>
                 </article>
               </div>
             </div>
@@ -36,7 +36,7 @@
     </MainModal>
     <main v-if="isFilter">
       <ResultCard />
-      <button @click="isFilter = false" class="apply">Return to filters</button>
+      <button @click="isFilter=false" class="apply">Return to filters</button>
     </main>
   </div>
 </template>
@@ -51,7 +51,7 @@ import { FacetModel } from "./types/result.model";
 import { ResponseModel } from "./types/result.model";
 import { ResultModel } from "./types/result.model";
 import { Find } from "./types/result.model";
-//import store from "./store/index";
+import createStore from "./store/index";
 
 export default defineComponent({
   name: "App",
@@ -69,20 +69,22 @@ export default defineComponent({
       facet: {facets: [] } as any,
       minYear: 0,
       maxYear: 0,
-      //year: store.state.yearFilter,
+      values: [] as string[],
     };
   },
   async mounted () {
     const response = await Find.fetchCat();
     this.facet = mapResponse(response);
-    console.log("App");
-    console.log("min: "+this.minYear);
-    console.log("max: "+this.maxYear);
   },
   methods: {
+    addGenre(item: string){
+      createStore.dispatch("genre", true);
+      this.values.push(item.charAt(0).toUpperCase()+item.slice(1));
+      console.log(this.values);
+      createStore.dispatch("value",this.values);
+    },
     changeCat(list: string[]) {
       this.listCat = list;
-      console.log(list);
     },
     outputYear(min: number, max: number){
       //this.year = true;

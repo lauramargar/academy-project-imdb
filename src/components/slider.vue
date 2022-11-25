@@ -35,6 +35,12 @@ export default defineComponent ({
 });
 </script>
 <style>
+.sliderBtn:checked:after {
+    content: "✓";
+    font-size: 1.3rem;
+    background-color: var(--purple-colour);
+    transform: scale(1);
+}
 .range {
   display: flex;
   flex-direction: row;

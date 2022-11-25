@@ -1,6 +1,6 @@
 <template>
   <div id="emotions">
-    <p>¿How do you feel?</p>
+    <p>How do you feel?</p>
       <button class="joyBtn" @click="changeCat('joy')" >😊</button>
       <button class="loveBtn" @click="changeCat('love')">😍</button>
       <button class="neutralBtn" @click="changeCat('neutral')">😐</button>
