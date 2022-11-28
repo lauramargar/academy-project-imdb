@@ -13,6 +13,11 @@ export default createStore ({
       maxMin: 0,
       value: [],
  },
+ getters: {
+  allFilms(state){
+      return state.allFilms;
+  }
+ },
  mutations: {
     year(state, value) {
       state.yearFilter = value;

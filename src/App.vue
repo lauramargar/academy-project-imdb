@@ -16,7 +16,7 @@
               <p>Choose a category:</p>
               <div class="list-cat">
                 <article v-for="item in listCat" :key="item">
-                  <label class="label"><input class="check" type="checkbox" @click="addGenre(item)" /> {{ item }} </label>
+                  <label class="label"><input class="check" id="check" type="checkbox" @click="addGenre(item)" /> {{ item }} </label>
                 </article>
               </div>
             </div>
@@ -31,12 +31,12 @@
           </div>
         </div>
         <span class='arrowDown' @click="scrollSliderDown"></span>
-        <button class="apply" @click="isFilter = true">Apply Filters >></button>
+        <button class="apply" @click="searchWithFilters ">Apply Filters >></button>
       </div>
     </MainModal>
     <main v-if="isFilter">
       <ResultCard />
-      <button @click="isFilter=false" class="apply">Return to filters</button>
+      <button @click="isFilter = false" class="apply">Return to filters</button>
     </main>
   </div>
 </template>
@@ -79,6 +79,19 @@ export default defineComponent({
   methods: {
     addGenre(item: string){
       createStore.dispatch("genre", true);
+     /* var index = this.listCat.indexOf(item);
+      var element = <HTMLInputElement> document.getElementById("check");
+        console.log(index);
+        console.log(element.checked+"1");
+      if (!this.values.includes(item) && element.checked){
+        console.log("añadir");
+        console.log(element.checked+"2");
+        this.values.push(item.charAt(0).toUpperCase()+item.slice(1));
+      } else if(!element.checked){
+        console.log("borrar");
+        console.log(element.checked+"3");
+        this.values.splice(index,1);
+      }*/
       this.values.push(item.charAt(0).toUpperCase()+item.slice(1));
       console.log(this.values);
       createStore.dispatch("value",this.values);
@@ -105,6 +118,10 @@ export default defineComponent({
         top: slider.scrollTop - box?.offsetHeight
       });
     },
+    searchWithFilters() {
+      this.isFilter = true;
+      this.$store.dispatch("findFilms");
+    }
   },
 });
 

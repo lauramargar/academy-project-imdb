@@ -21,8 +21,8 @@
     name: "DurationSlider",
     data: function () {
       return {
-          inputOne: "60",
-          inputTwo: "180",
+          inputOne: "50",
+          inputTwo: "170",
       };
     },
     methods: {

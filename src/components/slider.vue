@@ -35,10 +35,20 @@ export default defineComponent ({
 });
 </script>
 <style>
-.sliderBtn:checked:after {
-    content: "✓";
+.sliderBtn{
+  padding: .375rem .75rem;
+  border: 1px solid #14467b;
+  border-radius: .25rem;
+  color: #14467b;
+  transition: color .15s ease-in-out,
+    background-color .15s ease-in-out;
+  bottom: 40%;
+  font-size: 15px;
+}
+.sliderBtn:focus, .sliderBtn:active {
+    content: "ok";
     font-size: 1.3rem;
-    background-color: var(--purple-colour);
+    background-color: greenyellow;
     transform: scale(1);
 }
 .range {
