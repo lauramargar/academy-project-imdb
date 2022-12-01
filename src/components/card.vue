@@ -1,57 +1,63 @@
 <template>
-    <p>RESULTADOS</p>
-    <div class="grid-results">
-      <article id="results" class="article" v-for="result in getFilms">
-          <div class="image">
-              <img @click="showDetails" src="../assets/spiderman2.png" />
-          </div>
-          <div class="name">{{ result.primaryTitle }}</div>
-          <div class="rating">{{ result.averageRating }}</div>
-          <CardDetail v-if="isDetail" :result="result" />
-      </article>
+  <div class="card">
+    <article id="card" class="article">
+        <div class="image">
+            <img @click="showDetails(result)" src="../assets/spiderman2.png" />
+        </div>
+        <div class="name">{{ result.primaryTitle }}</div>
+        <div class="rating">⭐ {{ result.averageRating }}</div>
+    </article>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
-import CardDetail from "./cardDetail.vue";
+//import CardDetail from "./cardDetail.vue";
+import createStore from "../store/index";
 
 export default defineComponent ({
   name: "ResultCard",
-  components: {
-    CardDetail,
-  },
+  props: ['result'],
   data: function () {
     return {
-        isDetail: false,
+        isDetail: createStore.state.isDetail,
         images: [] as string[],
+        isFilter: true,
+        show: false,
     };
   },
-  computed: {
+  /*computed: {
     getFilms() {
       console.log(this.$store.getters.allFilms.hits);
       return this.$store.getters.allFilms.hits;
     }
-  },
+  },*/
   methods: {
-    showDetails(){
+    showDetails(item: any){
       this.isDetail = true;
-    }
+      createStore.dispatch("getIsDetail",this.isDetail);
+      createStore.dispatch("getDetailFilm",item);
+    },
+    changeBool(){
+      this.isFilter = false;
+      this.$emit("aux", this.isFilter);
+    },
   }
 });
 
 </script>
 <style>
-
-.grid-results{
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
+.results {
+  font-weight: bold;
 }
-
-/*img:hover{
-  width: 1.3em;
-  height: 1.3em;
-}*/
+.article {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  box-shadow: 8px 7px 12px 3px rgba(0, 0, 0, 0.6);
+  padding: 1.5rem;
+  margin: 20px;
+  width: 275px;
+  height: 525px;
+}
 
 </style>

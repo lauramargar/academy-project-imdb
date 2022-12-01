@@ -19,7 +19,7 @@ export class Find {
       return await response.json();
   };
   static async fetchFilms() {
-    const films = await fetch("http://localhost:8080/search");
+    const films = await fetch("http://localhost:8080/search/?type=movie&maxNHits=15");
     return await films.json();
   };
   /*static async fetchImage(title: string) {

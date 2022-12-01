@@ -31,13 +31,23 @@
           </div>
         </div>
         <span class='arrowDown' @click="scrollSliderDown"></span>
-        <button class="apply" @click="searchWithFilters ">Apply Filters >></button>
+        <button class="apply" @click="searchWithFilters">Apply Filters >></button>
       </div>
     </MainModal>
+    
     <main v-if="isFilter">
-      <ResultCard />
-      <button @click="isFilter = false" class="apply">Return to filters</button>
+      <p class="results">RESULTADOS</p>
+      <div class="grid-results">
+        <div class="grid" v-for="result in getFilms">
+          <transition name="flip">
+            <ResultCard :result="result" v-if="!isDetail"/>
+            <CardDetail v-else />
+          </transition>
+        </div>
+      </div>
+      <button v-if="!isDetail" @click="returnFilters" class="apply">Return to filters</button>
     </main>
+
   </div>
 </template>
 
@@ -47,6 +57,7 @@ import EmotionsFilter from "./components/emotions.vue";
 import SliderFilter from "./components/slider.vue";
 import DurationSlider from "./components/durationSlider.vue";
 import ResultCard from "./components/card.vue";
+import CardDetail from "./components/cardDetail.vue";
 import { FacetModel } from "./types/result.model";
 import { ResponseModel } from "./types/result.model";
 import { ResultModel } from "./types/result.model";
@@ -60,6 +71,7 @@ export default defineComponent({
     SliderFilter,
     ResultCard,
     DurationSlider,
+    CardDetail,
   },
   data: function () {
     return {
@@ -70,35 +82,36 @@ export default defineComponent({
       minYear: 0,
       maxYear: 0,
       values: [] as string[],
+      isDetail: createStore.state.isDetail,
     };
+  },
+  computed: {
+    getFilms() {
+      console.log(this.$store.getters.allFilms.hits);
+      return this.$store.getters.allFilms.hits;
+    }
   },
   async mounted () {
     const response = await Find.fetchCat();
     this.facet = mapResponse(response);
   },
   methods: {
+    returnFilters(){
+      this.isFilter = false;
+    },
+    toggleCard(film: {}){
+      createStore.dispatch("getDetailFilm", film);
+    },
     addGenre(item: string){
       createStore.dispatch("genre", true);
-     /* var index = this.listCat.indexOf(item);
-      var element = <HTMLInputElement> document.getElementById("check");
-        console.log(index);
-        console.log(element.checked+"1");
-      if (!this.values.includes(item) && element.checked){
-        console.log("añadir");
-        console.log(element.checked+"2");
-        this.values.push(item.charAt(0).toUpperCase()+item.slice(1));
-      } else if(!element.checked){
-        console.log("borrar");
-        console.log(element.checked+"3");
-        this.values.splice(index,1);
-      }*/
-      this.values.push(item.charAt(0).toUpperCase()+item.slice(1));
-      console.log(this.values);
-      createStore.dispatch("value",this.values);
+      createStore.dispatch("addGenreFilter", item.charAt(0).toUpperCase() + item.slice(1));
     },
     changeCat(list: string[]) {
       this.listCat = list;
     },
+    /*changeBool(aux: boolean) {
+      this.isFilter = aux;
+    },*/
     outputYear(min: number, max: number){
       //this.year = true;
       this.minYear = min;
@@ -191,6 +204,12 @@ function getKeyByValue(value: string) {
 </script>
 
 <style>
+.grid-results {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -246,15 +265,6 @@ p {
   display: flex;
   flex-direction: column;
   justify-content: center;
-}
-.article {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  box-shadow: 8px 7px 12px 3px rgba(0, 0, 0, 0.6);
-  padding: 1.5rem;
-  margin: 20px;
-  width: max-content;
 }
 .list-cat {
   display: flex;
@@ -335,10 +345,17 @@ p {
   color: #fff;
   background-color: rgb(72, 70, 70);
 }
-.slide-fade-enter-active {
-  transition: all .3s ease;
+
+.flip-enter-active {
+    transition: all 0.4s ease;
 }
-.slide-fade-leave-active {
-  transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+
+.flip-leave-active {
+  display: none;
+}
+
+.flip-enter, .flip-leave {
+  transform: rotateY(190deg);
+  opacity: 0;
 }
 </style>

@@ -1,46 +1,60 @@
 <template>
-    <div class="card">
-      <article id="results" class="article">
-          <div class="image">
-              <img src="../assets/spiderman2.png" />
-          </div>
-          <div class="name">{{ result.primaryTitle }}</div>
-          <div class="rating">{{ result.averageRating }}</div>
-          <div class="genres">{{ result.genres }}</div>
-          <div class="votes">{{ result.numVotes }}</div>
-          <div class="duration">{{ result.runtimeMinutes }}</div>
-          <div class="year">{{ result.startYear }}</div>
-      </article>
+  <div class="card">
+    <article id="card" class="article">
+        <div class="image">
+          <img @click="showDetails()" class="imgDetail" src="../assets/spiderman2.png" />
+        </div>
+        <div class="name">{{ result.primaryTitle }}</div>
+        <div class="rating">⭐ {{ result.averageRating }}</div>
+        <div class="genres">
+          Genres:
+          <ul v-for="genre in result.genres">
+            <li>{{ genre }}</li>
+          </ul>
+        </div>
+        <div class="votes">Number of votes: {{ result.numVotes }}</div>
+        <div class="duration">Duration: {{ result.runtimeMinutes }} minutes</div>
+    </article>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
+import createStore from "../store/index";
 
 export default defineComponent ({
   name: "CardDetail",
-  props: {
-    result: {} as any,
-  },
   data: function () {
     return {
         films: {} as any,
         images: [] as string[],
+        retrn: true,
+        result: createStore.state.filmDetail,
+        isDetail: createStore.state.isDetail,
     };
   },
+  methods: {
+    /*returnResults(){
+      this.retrn = false;
+      this.$emit("retrn", this.retrn);
+    },*/
+    showDetails(){
+      this.isDetail = false;
+      createStore.dispatch("getIsDetail",this.isDetail);
+    }
+  }
 });
 
 </script>
 <style>
-
-.grid-results{
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
+.imgDetail{
+  height: 200px;
+  
 }
-/*img:hover{
-  width: 1.3em;
-  height: 1.3em;
-}*/
-
+.name {
+  font-size: 25px;
+  font-weight: 500;
+}
+li {
+  list-style-position: inside;
+}
 </style>

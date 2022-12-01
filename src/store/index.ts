@@ -11,7 +11,9 @@ export default createStore ({
       maxYear: 0,
       minMin: 0,
       maxMin: 0,
-      value: [],
+      selectedFilters: [] as string[],
+      filmDetail: {} as any,
+      isDetail: false,
  },
  getters: {
   allFilms(state){
@@ -40,12 +42,18 @@ export default createStore ({
     maxMin(state, value) {
       state.maxMin = value;
     },
-    value(state, value) {
-      state.value = value;
+    selectedFilters(state, filters) {
+      state.selectedFilters = filters;
     },
     setAllFilms(state, value) {
       state.allFilms = value;
     },
+    setDetailFilm(state,filmDetail){
+      state.filmDetail = filmDetail;
+    },
+    setIsDetail(state,isDetail){
+      state.isDetail = isDetail;
+    }
  },
  actions: {
     year(context, value) {
@@ -69,8 +77,20 @@ export default createStore ({
     maxMin(context, value) {
       context.commit("maxMin", value);
     },
-    value(context, value) {
-      context.commit("value", value);
+    getDetailFilm(context, detailFilm){
+      context.commit("setDetailFilm",detailFilm);
+    },
+    getIsDetail(context, isDetail){
+      context.commit("setIsDetail", isDetail);
+    },
+    addGenreFilter({ commit, state}, filter) {
+      if(state.selectedFilters.includes(filter)) {
+        const newSelectedFilters = state.selectedFilters.filter(selectedFilter => selectedFilter!== filter);
+        commit("selectedFilters", newSelectedFilters);
+      }
+      else {
+        commit("selectedFilters", [...state.selectedFilters, filter]);
+      }
     },
     async findFilms({ commit, state }) {
       let response;
@@ -79,20 +99,20 @@ export default createStore ({
       }else if (state.minFilter && !state.genreFilter && !state.yearFilter){
         response = await Filter.byDuration(state.minMin,state.maxMin);
       } else if (state.genreFilter && !state.yearFilter && !state.minFilter){
-        const genres = state.value.join(",");
+        const genres = state.selectedFilters.join(",");
         response = await Filter.byGenre(genres);
       } else if (state.yearFilter && state.minFilter && !state.genreFilter){
         response = await Filter.byYearDur(state.minYear,state.maxYear,state.minMin,state.maxMin);
       } else if (((state.yearFilter && !state.minFilter) || (state.minFilter && !state.yearFilter)) && state.genreFilter){
         if (state.yearFilter){
-          const param = state.value.join(",")+"&minYear="+state.minYear+"&maxYear="+state.maxYear;
+          const param = state.selectedFilters.join(",")+"&minYear="+state.minYear+"&maxYear="+state.maxYear;
           response = await Filter.byGenreAndOne(param);
         } else if (state.minFilter){
-          const param = state.value.join(",")+"&minMinutes="+state.minMin+"&maxMinutes="+state.maxMin;
+const param = state.selectedFilters.join(",")+"&minMinutes="+state.minMin+"&maxMinutes="+state.maxMin;
           response = await Filter.byGenreAndOne(param);
         }
       } else if (state.genreFilter && state.minFilter && state.yearFilter){
-        const param = state.value.join(",")+"&minMinutes="+state.minMin+"&maxMinutes="+state.maxMin+"&minYear="+state.minYear+"&maxYear="+state.maxYear;
+        const param = state.selectedFilters.join(",")+"&minMinutes="+state.minMin+"&maxMinutes="+state.maxMin+"&minYear="+state.minYear+"&maxYear="+state.maxYear;
         response = await Filter.byAll(param);
       } else {
         response = await Find.fetchFilms();

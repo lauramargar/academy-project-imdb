@@ -36,7 +36,8 @@ export default defineComponent ({
 </script>
 <style>
 .sliderBtn{
-  padding: .375rem .75rem;
+  height: 30px;
+  width: 70px;
   border: 1px solid #14467b;
   border-radius: .25rem;
   color: #14467b;
@@ -45,11 +46,19 @@ export default defineComponent ({
   bottom: 40%;
   font-size: 15px;
 }
+.sliderBtn:after{
+  content: " ✓";
+  opacity: 0;
+}
+.sliderBtn:focus:after, .sliderBtn:active:after{
+  opacity: 1;
+} 
 .sliderBtn:focus, .sliderBtn:active {
-    content: "ok";
     font-size: 1.3rem;
     background-color: greenyellow;
     transform: scale(1);
+    height: 40px;
+    width: 90px;
 }
 .range {
   display: flex;
