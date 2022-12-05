@@ -2,10 +2,10 @@
   <div class="card">
     <article id="card" class="article">
         <div class="image">
-          <img @click="showDetails()" class="imgDetail" src="../assets/spiderman2.png" />
+          <img class="imgDetail" src="../assets/spiderman2.png" />
         </div>
         <div class="name">{{ result.primaryTitle }}</div>
-        <div class="rating">⭐ {{ result.averageRating }}</div>
+        <div class="rating">⭐ {{ result.averageRating }} </div>
         <div class="genres">
           Genres:
           <ul v-for="genre in result.genres">
@@ -13,33 +13,33 @@
           </ul>
         </div>
         <div class="votes">Number of votes: {{ result.numVotes }}</div>
-        <div class="duration">Duration: {{ result.runtimeMinutes }} minutes</div>
+        <div class="duration">Duration: {{ result.runtimeMinutes }} minutes</div>       
+        <div class="director" v-if="getDirector">Director: {{ getDirector }}</div>
+
     </article>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
-import createStore from "../store/index";
 
 export default defineComponent ({
   name: "CardDetail",
+  props: ['result'],
   data: function () {
     return {
         films: {} as any,
         images: [] as string[],
         retrn: true,
-        result: createStore.state.filmDetail,
-        isDetail: createStore.state.isDetail,
+        isDetail: this.$store.state.isDetail,
+        actors: [] as string[]
     };
   },
-  methods: {
-    /*returnResults(){
-      this.retrn = false;
-      this.$emit("retrn", this.retrn);
-    },*/
-    showDetails(){
-      this.isDetail = false;
-      createStore.dispatch("getIsDetail",this.isDetail);
+  mounted() {
+    this.$store.dispatch('getDirector', this.result.directors[0].nconst)
+  },
+  computed: {
+    getDirector() {
+      return this.$store.state.director[0]?.primaryName;
     }
   }
 });
@@ -56,5 +56,6 @@ export default defineComponent ({
 }
 li {
   list-style-position: inside;
+  align-items: center;
 }
 </style>

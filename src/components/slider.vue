@@ -36,14 +36,13 @@ export default defineComponent ({
 </script>
 <style>
 .sliderBtn{
-  height: 30px;
-  width: 70px;
+  height: 25px;
+  width: 60px;
   border: 1px solid #14467b;
   border-radius: .25rem;
   color: #14467b;
   transition: color .15s ease-in-out,
     background-color .15s ease-in-out;
-  bottom: 40%;
   font-size: 15px;
 }
 .sliderBtn:after{
@@ -55,7 +54,6 @@ export default defineComponent ({
 } 
 .sliderBtn:focus, .sliderBtn:active {
     font-size: 1.3rem;
-    background-color: greenyellow;
     transform: scale(1);
     height: 40px;
     width: 90px;

@@ -14,11 +14,12 @@ export default createStore ({
       selectedFilters: [] as string[],
       filmDetail: {} as any,
       isDetail: false,
+      director: [] as Record<string, unknown>[],
  },
  getters: {
   allFilms(state){
       return state.allFilms;
-  }
+  },
  },
  mutations: {
     year(state, value) {
@@ -53,6 +54,9 @@ export default createStore ({
     },
     setIsDetail(state,isDetail){
       state.isDetail = isDetail;
+    },
+    setDirector(state, director){
+      state.director = director;
     }
  },
  actions: {
@@ -91,6 +95,10 @@ export default createStore ({
       else {
         commit("selectedFilters", [...state.selectedFilters, filter]);
       }
+    },
+    async getDirector(context, director){
+      let response = await Find.fetchDirector(director);
+      context.commit("setDirector", response);
     },
     async findFilms({ commit, state }) {
       let response;

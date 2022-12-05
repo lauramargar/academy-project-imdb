@@ -16,7 +16,7 @@
               <p>Choose a category:</p>
               <div class="list-cat">
                 <article v-for="item in listCat" :key="item">
-                  <label class="label"><input class="check" id="check" type="checkbox" @click="addGenre(item)" /> {{ item }} </label>
+                  <label class="label"><input class="check" id="check" type="checkbox" @click="addGenre(item)" :checked="isChecked(item)"/> {{ item }} </label>
                 </article>
               </div>
             </div>
@@ -39,10 +39,14 @@
       <p class="results">RESULTADOS</p>
       <div class="grid-results">
         <div class="grid" v-for="result in getFilms">
-          <transition name="flip">
-            <ResultCard :result="result" v-if="!isDetail"/>
-            <CardDetail v-else />
-          </transition>
+          <Flip>
+            <template #front>
+              <ResultCard :result="result" />
+            </template>
+            <template #back>
+              <CardDetail :result="result"/>
+            </template>
+          </Flip>
         </div>
       </div>
       <button v-if="!isDetail" @click="returnFilters" class="apply">Return to filters</button>
@@ -58,6 +62,7 @@ import SliderFilter from "./components/slider.vue";
 import DurationSlider from "./components/durationSlider.vue";
 import ResultCard from "./components/card.vue";
 import CardDetail from "./components/cardDetail.vue";
+import Flip from "./components/flip.vue";
 import { FacetModel } from "./types/result.model";
 import { ResponseModel } from "./types/result.model";
 import { ResultModel } from "./types/result.model";
@@ -72,6 +77,7 @@ export default defineComponent({
     ResultCard,
     DurationSlider,
     CardDetail,
+    Flip,
   },
   data: function () {
     return {
@@ -89,7 +95,7 @@ export default defineComponent({
     getFilms() {
       console.log(this.$store.getters.allFilms.hits);
       return this.$store.getters.allFilms.hits;
-    }
+    },
   },
   async mounted () {
     const response = await Find.fetchCat();
@@ -98,6 +104,9 @@ export default defineComponent({
   methods: {
     returnFilters(){
       this.isFilter = false;
+    },
+    isChecked(item: string) {
+     return this.$store.state.selectedFilters.includes(item.charAt(0).toUpperCase() + item.slice(1));
     },
     toggleCard(film: {}){
       createStore.dispatch("getDetailFilm", film);
@@ -109,9 +118,6 @@ export default defineComponent({
     changeCat(list: string[]) {
       this.listCat = list;
     },
-    /*changeBool(aux: boolean) {
-      this.isFilter = aux;
-    },*/
     outputYear(min: number, max: number){
       //this.year = true;
       this.minYear = min;
@@ -333,6 +339,7 @@ p {
   background-color: #14467b;
 }
 .apply {
+  margin: 40px;
   padding: .375rem .75rem;
   border: 1px solid rgb(72, 70, 70);
   border-radius: .25rem;
@@ -344,18 +351,5 @@ p {
 .apply:hover, .apply:active, .apply:focus {
   color: #fff;
   background-color: rgb(72, 70, 70);
-}
-
-.flip-enter-active {
-    transition: all 0.4s ease;
-}
-
-.flip-leave-active {
-  display: none;
-}
-
-.flip-enter, .flip-leave {
-  transform: rotateY(190deg);
-  opacity: 0;
 }
 </style>

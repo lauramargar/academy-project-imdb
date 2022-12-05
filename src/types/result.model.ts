@@ -22,6 +22,10 @@ export class Find {
     const films = await fetch("http://localhost:8080/search/?type=movie&maxNHits=15");
     return await films.json();
   };
+  static async fetchDirector(param: string) {
+    const director = await fetch("http://localhost:8080/search/names?ids="+param);
+    return await director.json();
+  };
   /*static async fetchImage(title: string) {
     const image = await fetch("https://www.omdbapi.com/?apikey=c901ed49&t="+title);
     return await image.json();
