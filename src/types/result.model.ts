@@ -26,10 +26,10 @@ export class Find {
     const director = await fetch("http://localhost:8080/search/names?ids="+param);
     return await director.json();
   };
-  /*static async fetchImage(title: string) {
+  static async fetchImage(title: string) {
     const image = await fetch("https://www.omdbapi.com/?apikey=c901ed49&t="+title);
     return await image.json();
-  };*/
+  };
 }
 export class Filter {
   static async byYear (min: number, max: number) {

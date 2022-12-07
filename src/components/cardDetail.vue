@@ -2,7 +2,7 @@
   <div class="card">
     <article id="card" class="article">
         <div class="image">
-          <img class="imgDetail" src="../assets/spiderman2.png" />
+          <img class="imgDetail" :src="result.image" />
         </div>
         <div class="name">{{ result.primaryTitle }}</div>
         <div class="rating">⭐ {{ result.averageRating }} </div>
@@ -14,7 +14,8 @@
         </div>
         <div class="votes">Number of votes: {{ result.numVotes }}</div>
         <div class="duration">Duration: {{ result.runtimeMinutes }} minutes</div>       
-        <div class="director" v-if="getDirector">Director: {{ getDirector }}</div>
+        <div class="director" v-if="(result.director?.length > 0)">Director: {{ result.director }}</div>
+        <div class="director" v-if="(result.actors?.length > 0)">Actors: {{ result.actors }}</div>
 
     </article>
   </div>
@@ -24,23 +25,11 @@ import { defineComponent } from "vue";
 
 export default defineComponent ({
   name: "CardDetail",
-  props: ['result'],
+  props: ['result','index'],
   data: function () {
     return {
-        films: {} as any,
-        images: [] as string[],
-        retrn: true,
         isDetail: this.$store.state.isDetail,
-        actors: [] as string[]
     };
-  },
-  mounted() {
-    this.$store.dispatch('getDirector', this.result.directors[0].nconst)
-  },
-  computed: {
-    getDirector() {
-      return this.$store.state.director[0]?.primaryName;
-    }
   }
 });
 

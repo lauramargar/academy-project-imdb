@@ -36,20 +36,21 @@
     </MainModal>
     
     <main v-if="isFilter">
-      <p class="results">RESULTADOS</p>
+      <p class="results">RESULTS</p>
       <div class="grid-results">
-        <div class="grid" v-for="result in getFilms">
+        <div class="grid" v-for="(result, index) in getFilms">
           <Flip>
             <template #front>
               <ResultCard :result="result" />
             </template>
             <template #back>
-              <CardDetail :result="result"/>
+              <CardDetail :result="result" :index="index" />
             </template>
           </Flip>
         </div>
       </div>
-      <button v-if="!isDetail" @click="returnFilters" class="apply">Return to filters</button>
+      <img src="./assets/arrow.png" v-if="!isDetail" @click="returnFilters" class="arrow" />
+      <!--<button v-if="!isDetail" @click="returnFilters" class="apply">Return to filters</button>-->
     </main>
 
   </div>
@@ -67,7 +68,6 @@ import { FacetModel } from "./types/result.model";
 import { ResponseModel } from "./types/result.model";
 import { ResultModel } from "./types/result.model";
 import { Find } from "./types/result.model";
-import createStore from "./store/index";
 
 export default defineComponent({
   name: "App",
@@ -79,7 +79,7 @@ export default defineComponent({
     CardDetail,
     Flip,
   },
-  data: function () {
+  data: () => {
     return {
       listCat: [""],
       isOpen: false,
@@ -87,15 +87,16 @@ export default defineComponent({
       facet: {facets: [] } as any,
       minYear: 0,
       maxYear: 0,
-      values: [] as string[],
-      isDetail: createStore.state.isDetail,
+      values: [] as string[]
     };
   },
   computed: {
     getFilms() {
-      console.log(this.$store.getters.allFilms.hits);
       return this.$store.getters.allFilms.hits;
     },
+    isDetail() {
+      return this.$store.state.isDetail;
+    }
   },
   async mounted () {
     const response = await Find.fetchCat();
@@ -109,11 +110,11 @@ export default defineComponent({
      return this.$store.state.selectedFilters.includes(item.charAt(0).toUpperCase() + item.slice(1));
     },
     toggleCard(film: {}){
-      createStore.dispatch("getDetailFilm", film);
+      this.$store.dispatch("getDetailFilm", film);
     },
     addGenre(item: string){
-      createStore.dispatch("genre", true);
-      createStore.dispatch("addGenreFilter", item.charAt(0).toUpperCase() + item.slice(1));
+      this.$store.dispatch("genre", true);
+      this.$store.dispatch("addGenreFilter", item.charAt(0).toUpperCase() + item.slice(1));
     },
     changeCat(list: string[]) {
       this.listCat = list;
@@ -210,6 +211,12 @@ function getKeyByValue(value: string) {
 </script>
 
 <style>
+.arrow{
+  position: sticky;
+  width: 100px;
+  bottom: 85%;
+  right: 90%;
+}
 .grid-results {
   display: flex;
   flex-direction: row;

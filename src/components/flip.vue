@@ -25,8 +25,8 @@
   <!-- Add "scoped" attribute to limit CSS to this component only -->
   <style scoped>
   .card {
-    width: 275px;
-    height: 550px;
+    width: 300px;
+    height: 580px;
     padding: 1.5rem;
     margin: 25px;
     transition: transform 1s;

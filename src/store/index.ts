@@ -6,7 +6,7 @@ export default createStore ({
       yearFilter: false,
       minFilter: false,
       genreFilter: false,
-      allFilms: {} as any[],
+      allFilms: {} as any,
       minYear: 0,
       maxYear: 0,
       minMin: 0,
@@ -14,7 +14,6 @@ export default createStore ({
       selectedFilters: [] as string[],
       filmDetail: {} as any,
       isDetail: false,
-      director: [] as Record<string, unknown>[],
  },
  getters: {
   allFilms(state){
@@ -54,9 +53,6 @@ export default createStore ({
     },
     setIsDetail(state,isDetail){
       state.isDetail = isDetail;
-    },
-    setDirector(state, director){
-      state.director = director;
     }
  },
  actions: {
@@ -96,10 +92,6 @@ export default createStore ({
         commit("selectedFilters", [...state.selectedFilters, filter]);
       }
     },
-    async getDirector(context, director){
-      let response = await Find.fetchDirector(director);
-      context.commit("setDirector", response);
-    },
     async findFilms({ commit, state }) {
       let response;
       if (state.yearFilter && !state.genreFilter && !state.minFilter){
@@ -125,6 +117,29 @@ const param = state.selectedFilters.join(",")+"&minMinutes="+state.minMin+"&maxM
       } else {
         response = await Find.fetchFilms();
       }
+
+      for(let film of response.hits){        
+        const director = await Find.fetchDirector(film.directors[0].nconst);
+        film.director = director[0].primaryName;
+
+        const ids= [];
+        for (let character of film.starring){
+          if(character.characters != '/N'){
+            ids.push(character.name.nconst);
+          }
+        }
+        const actors = await Find.fetchDirector(ids.join(","));
+        const actorsList = [];
+        for (let actor of actors){
+          actorsList.push(actor.primaryName);
+        }
+        console.log(actorsList);
+        film.actors = actorsList[0]+', '+actorsList[1]+', '+actorsList[2];
+
+        const poster = await Find.fetchImage(film.primaryTitle);
+        film.image = poster.Poster;
+      };
+
       commit("setAllFilms", response);
     },
  },
