@@ -118,22 +118,27 @@ const param = state.selectedFilters.join(",")+"&minMinutes="+state.minMin+"&maxM
         response = await Find.fetchFilms();
       }
 
-      for(let film of response.hits){        
-        const director = await Find.fetchDirector(film.directors[0].nconst);
-        film.director = director[0].primaryName;
+      for(let film of response.hits){    
+        if(film.directors[0].nconst != '\N'){
+          const director = await Find.fetchDirector(film.directors[0].nconst);
+          film.director = director[0].primaryName;
+        } else {
+          film.director = 'Director not found';
+        }   
+        
 
         const ids= [];
         for (let character of film.starring){
-          if(character.characters != '/N'){
+          if(character.characters != "\\N" || character.name.nconst != "\N" ){
             ids.push(character.name.nconst);
           }
         }
+        
         const actors = await Find.fetchDirector(ids.join(","));
         const actorsList = [];
         for (let actor of actors){
           actorsList.push(actor.primaryName);
         }
-        console.log(actorsList);
         film.actors = actorsList[0]+', '+actorsList[1]+', '+actorsList[2];
 
         const poster = await Find.fetchImage(film.primaryTitle);

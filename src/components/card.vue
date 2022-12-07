@@ -15,19 +15,6 @@ import { defineComponent } from "vue";
 export default defineComponent ({
   name: "ResultCard",
   props: ['result'],
-  data: function () {
-    return {
-        isDetail: this.$store.state.isDetail,
-        isFilter: true,
-        show: false,
-    };
-  },
-  methods: {
-    changeBool(){
-      this.isFilter = false;
-      this.$emit("aux", this.isFilter);
-    },
-  }
 });
 
 </script>

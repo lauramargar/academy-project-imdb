@@ -25,8 +25,6 @@ export default defineComponent ({
   methods: {
     async changeCat(emotion: string) {
       this.list = [];
-      console.log("lista vacía");
-      console.log(this.result);
       for (let i = 0; i < (this.result).facets.length; i++) {
         if (emotion === this.result.facets[i].facet) {
           for (let x = 0; x < this.result.facets[i].values.length; x++) {
