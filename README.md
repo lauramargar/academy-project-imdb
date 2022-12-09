@@ -1,24 +1,16 @@
-# prueba_pelis
+# IMDB Project
 
 ## Project setup
-```
-npm install
-```
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
+1. Clone this project
+2. Download and install docker
+3. In this project and open terminal: docker-compose up --build
+4. Open: http://localhost:8081/
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+<<<<<<< HEAD
+
+
+=======
+>>>>>>> parent of 7eae53d (update readme)
